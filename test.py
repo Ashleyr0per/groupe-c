@@ -26,5 +26,13 @@ for i in range(len(joueurs)):
     representation_cartes = representation_cartes[:-2]     # Supprime les deux derniers caractères (virgule à la fin)
     print(f"Joueur {numero_joueur}: {representation_cartes}") 
 
+#affichage de la carte atout
 
-    
+carte_atout = random.choice(cartes)
+print(f"\nL'atout est : {carte_atout[0]} de {carte_atout[1]}")
+
+
+
+
+
+
