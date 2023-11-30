@@ -57,6 +57,81 @@ def select_trump_card(remaining_cards):
     random.shuffle(remaining_cards)
     return remaining_cards[0]
 
+# Function to check if a player has a card of the requested color
+def has_color(cards, color):
+    for card in cards:
+        if card[1] == color:
+            return True
+    return False
+
+# Define point values for Trump and No Trump
+trump_values = {
+    "Jack": 20,
+    "9": 14,
+    "Ace": 11,
+    "10": 10,
+    "King": 4,
+    "Queen": 3,
+    "8": 0,
+    "7": 0
+}
+
+no_trump_values = {
+    "Ace": 11,
+    "10": 10,
+    "King": 4,
+    "Queen": 3,
+    "Jack": 2,
+    "9": 0,
+    "8": 0,
+    "7": 0
+}
+#comparing cards during gameplay
+def get_card_value(card, trump_suit):
+    if card[0] == "Jack" and card[1] == trump_suit:
+        return trump_values["Jack"]
+    elif card[0] in trump_values:
+        return trump_values[card[0]]
+    else:
+        return no_trump_values[card[0]]
+
+
+# Function to play a turn
+def play_turn(player, hand, table, trump):
+    print(f"{player}, it's your turn.")
+    print(f"Table: {table}")
+
+    # Display player's hand
+    print(f"Your hand: {hand}")
+
+    color_on_table = table[0][1] if table else None  # Color on the table if any
+
+    if has_color(hand, color_on_table):  # Check if player has requested color
+        print(f"Play a card with color {color_on_table}.")
+        # Player plays a card with requested color if available
+        chosen_card = None
+        while chosen_card not in hand:
+            chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
+            if chosen_card not in hand:
+                print("Invalid card! Try again.")
+        hand.remove(chosen_card)
+        table.append(chosen_card)
+        print(f"{player} played: {chosen_card}")
+        return chosen_card
+
+    else:  # Player plays a trump or any card if unable to follow the color
+        print("You don't have the requested color. Play a trump card or any card.")
+        # Player plays a card in the trump color or any card
+        chosen_card = None
+        while chosen_card not in hand:
+            chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
+            if chosen_card not in hand:
+                print("Invalid card! Try again.")
+        hand.remove(chosen_card)
+        table.append(chosen_card)
+        print(f"{player} played: {chosen_card}")
+        return chosen_card
+
 # Function to start the game
 def start_belote():
     print("Welcome to Belote!")
@@ -77,13 +152,6 @@ def start_belote():
         print("Starting multiplayer game with players:", players)
         dealt_initial_cards, remaining_cards = distribute_initial_cards()
 
-        for i in range(num_players):
-            representation_cards = ""
-            for value, suit in dealt_initial_cards[i]:
-                representation_cards += f'{value} of {suit}, '
-            representation_cards = representation_cards[:-2]
-            print(f"{players[i]}: {representation_cards}")
-
         # Select and display the trump card
         trump_card = select_trump_card(remaining_cards)
         print(f"The trump card is: {trump_card[0]} of {trump_card[1]}")
@@ -98,7 +166,6 @@ def start_belote():
 
         if taker:
             print(f"{taker} took the trump card!")
-
             # Players receive additional cards after the trump is taken
             additional_cards = remaining_cards[:5]
             remaining_cards = remaining_cards[5:]
@@ -106,18 +173,9 @@ def start_belote():
             # Distribute additional cards (2 to taker, 3 to others)
             for i in range(num_players):
                 if players[i] == taker:
-                    dealt_initial_cards[i] += additional_cards[:3]
+                    dealt_initial_cards[i] += additional_cards[:2]
                 else:
                     dealt_initial_cards[i] += additional_cards[2:5]
-
-            # Display updated hands
-            print("Distributing additional cards...")
-            for i in range(num_players):
-                representation_cards = ""
-                for value, suit in dealt_initial_cards[i]:
-                    representation_cards += f'{value} of {suit}, '
-                representation_cards = representation_cards[:-2]
-                print(f"{players[i]}: {representation_cards}")
 
         else:
             print("No one took the trump card. Redistributing cards...")
@@ -126,14 +184,17 @@ def start_belote():
             remaining_cards.extend([card for hand in dealt_initial_cards for card in hand])
             random.shuffle(remaining_cards)
 
-            # Display redistributed cards
-            print("Redistributed cards:")
-            for i in range(num_players):
-                representation_cards = ""
-                for value, suit in remaining_cards[i * 8: (i + 1) * 8]:
-                    representation_cards += f'{value} of {suit}, '
-                representation_cards = representation_cards[:-2]
-                print(f"{players[i]}: {representation_cards}")
+        # Start playing the game
+        current_player_index = players.index(taker) if taker else 0
+        table = []  # Cards on the table
+        for _ in range(20):  # 20 turns in total
+            current_player = players[current_player_index]
+            current_hand = dealt_initial_cards[current_player_index]
+
+            played_card = play_turn(current_player, current_hand, table, trump_card[1])
+
+            # Move to the next player
+            current_player_index = (current_player_index + 1) % num_players
 
     elif num_players == 1:
         game_mode = "2"  # Set to play against AI automatically if only one player
