@@ -35,7 +35,7 @@ def get_player_names(num_players):
 # Function to initialize and distribute initial cards (5 cards per player) and a trump card
 def distribute_initial_cards():
     valeurs = ["7", "8", "9", "10", "Valet", "Dame", "Roi", "As"]
-    couleurs = ["[♥]", "[♦]","[♣]","[♠]"]
+    couleurs = ["coeur", "trefle", "carreau", "pique"]
     cartes = [(v, c) for v in valeurs for c in couleurs]
 
     random.shuffle(cartes)
@@ -95,6 +95,51 @@ def get_card_value(card, trump_suit):
     else:
         return no_trump_values[card[0]]
 
+def play_turn(player, hand, table, trump):
+    print(f"{player}, it's your turn.")
+    print(f"Table: {table}")
+
+    # Display player's hand
+    print(f"Your hand: {hand}")
+
+    color_on_table = table[0][1] if table else None  # Color on the table if any
+
+    if has_color(hand, color_on_table):  # Check if player has requested color
+        print(f"Play a card with color {color_on_table}.")
+    else:  # Player plays a trump or any card if unable to follow the color
+        print("You don't have the requested color. Play a trump card or any card.")
+
+    chosen_card = None
+    while chosen_card not in hand:
+        chosen_card_input = input("Enter the card you want to play (valeur de la couleur): ")
+        chosen_card = tuple(chosen_card_input.split(' de '))
+        if chosen_card not in hand:
+            print("Invalid card! Try again.")
+
+    hand.remove(chosen_card)
+    table.append(chosen_card)
+    print(f"{player} played: {chosen_card}")
+    return chosen_card
+
+# Modify this part in your code to compare card values and determine the winner of a trick
+# after each player has played their cards.
+# For instance:
+# After 4 cards are played (one from each player), compare their values and determine the winner.
+
+# Assuming 'table' contains the cards played by each player in a trick.
+def determine_trick_winner(table, trump):
+    winning_card = None
+    winning_value = -1
+    for card in table:
+        card_value = get_card_value(card, trump)
+        if card_value > winning_value:
+            winning_value = card_value
+            winning_card = card
+
+    # The winning_card variable now holds the card that wins the trick.
+    return winning_card
+
+
 
 # Function to play a turn
 def play_turn(player, hand, table, trump):
@@ -108,29 +153,21 @@ def play_turn(player, hand, table, trump):
 
     if has_color(hand, color_on_table):  # Check if player has requested color
         print(f"Play a card with color {color_on_table}.")
-        # Player plays a card with requested color if available
-        chosen_card = None
-        while chosen_card not in hand:
-            chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
-            if chosen_card not in hand:
-                print("Invalid card! Try again.")
-        hand.remove(chosen_card)
-        table.append(chosen_card)
-        print(f"{player} played: {chosen_card}")
-        return chosen_card
-
     else:  # Player plays a trump or any card if unable to follow the color
         print("You don't have the requested color. Play a trump card or any card.")
-        # Player plays a card in the trump color or any card
-        chosen_card = None
-        while chosen_card not in hand:
-            chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
-            if chosen_card not in hand:
-                print("Invalid card! Try again.")
-        hand.remove(chosen_card)
-        table.append(chosen_card)
-        print(f"{player} played: {chosen_card}")
-        return chosen_card
+
+    chosen_card = None
+    while chosen_card not in hand:
+        chosen_card_input = input("Enter the card you want to play (valeur de la couleur): ")
+        chosen_card = tuple(chosen_card_input.split(' de '))
+        if chosen_card not in hand:
+            print("Invalid card! Try again.")
+
+    hand.remove(chosen_card)
+    table.append(chosen_card)
+    print(f"{player} played: {chosen_card}")
+    return chosen_card
+
 
 # Function to start the game
 def start_belote():
