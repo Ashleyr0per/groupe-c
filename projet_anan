@@ -1,4 +1,6 @@
 # Créé par Anna, le 30/11/2023 en Python 3.7
+
+# Créé par Anna, le 30/11/2023 en Python 3.7
 import random
 
 # Function to display rules in English
@@ -104,6 +106,59 @@ def get_card_value(card, trump_suit):
 
 
 
+
+
+
+
+
+
+# Function to play a turn
+def play_turn(player, hand, table, trump):
+    if player == "AI":
+        return ai_play_turn(player, hand, table, trump)
+    else:
+        print(f"{player}, it's your turn.")
+        print(f"Table: {table}")
+
+        # Display player's hand
+        print(f"Your hand: {hand}")
+
+        color_on_table = table[0][1] if table else None  # Color on the table if any
+
+        if has_color(hand, color_on_table):  # Check if player has requested color
+            print(f"Play a card with color {color_on_table}.")
+            # Player plays a card with requested color if available
+            # Le joueur joue une carte avec la couleur demandée si disponible
+            chosen_card = None
+            while chosen_card not in hand:
+                chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
+                if chosen_card not in hand:
+                    print("Invalid card! Try again.")
+
+
+            hand.remove(chosen_card)
+            table.append(chosen_card)
+            print(f"{player} played: {chosen_card}")
+            return chosen_card
+
+
+
+
+
+        else:  # Player plays a trump or any card if unable to follow the color  # Le joueur joue un atout ou n'importe quelle carte s'il est incapable de suivre la couleur
+            print("You don't have the requested color. Play a trump card or any card.")
+            # Player plays a card in the trump color or any card
+            # Le joueur joue une carte de la couleur de l'atout ou n'importe quelle carte
+            chosen_card = None
+            while chosen_card not in hand:
+                chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
+                if chosen_card not in hand:
+                    print("Invalid card! Try again.")
+            hand.remove(chosen_card)
+            table.append(chosen_card)
+            print(f"{player} played: {chosen_card}")
+        return chosen_card
+
 def ai_play_turn(player, hand, table, trump):
     print(f"{player}, it's your turn (AI).")
     print(f"Table: {table}")
@@ -117,70 +172,21 @@ def ai_play_turn(player, hand, table, trump):
         print(f"AI plays a card with color {color_on_table}.")
         valid_cards = [card for card in hand if card[1] == color_on_table]
         chosen_card = random.choice(valid_cards)
-        hand.remove(chosen_card)
-        table.append(chosen_card)
-        print(f"{player} (AI) played: {chosen_card}")
-        return chosen_card
+
 
     else:  # AI plays a trump or any card if unable to follow the color
         print("AI doesn't have the requested color. Playing a trump card or any card.")
         valid_cards = [card for card in hand]
-        chosen_card = random.choice(valid_cards)
-        hand.remove(chosen_card)
-        table.append(chosen_card)
-        print(f"{player} (AI) played: {chosen_card}")
-        return chosen_card
+
+    chosen_card = random.choice(valid_cards)
+    hand.remove(chosen_card)
+    table.append(chosen_card)
+    print(f"{player} (AI) played: {chosen_card}")
+    return chosen_card
 
 
 
-
-
-# Function to play a turn
-def play_turn(player, hand, table, trump):
-    print(f"{player}, it's your turn.")
-    print(f"Table: {table}")
-
-    # Display player's hand
-    print(f"Your hand: {hand}")
-
-    color_on_table = table[0][1] if table else None  # Color on the table if any
-
-    if has_color(hand, color_on_table):  # Check if player has requested color
-        print(f"Play a card with color {color_on_table}.")
-        # Player plays a card with requested color if available
-        # Le joueur joue une carte avec la couleur demandée si disponible
-        chosen_card = None
-        while chosen_card not in hand:
-            chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
-            if chosen_card not in hand:
-                print("Invalid card! Try again.")
-        hand.remove(chosen_card)
-        table.append(chosen_card)
-        print(f"{player} played: {chosen_card}")
-        return chosen_card
-
-
-
-
-
-    else:  # Player plays a trump or any card if unable to follow the color  # Le joueur joue un atout ou n'importe quelle carte s'il est incapable de suivre la couleur
-        print("You don't have the requested color. Play a trump card or any card.")
-        # Player plays a card in the trump color or any card
-        # Le joueur joue une carte de la couleur de l'atout ou n'importe quelle carte
-        chosen_card = None
-        while chosen_card not in hand:
-            chosen_card = tuple(input("Enter the card you want to play (value, suit): ").split(', '))
-            if chosen_card not in hand:
-                print("Invalid card! Try again.")
-        hand.remove(chosen_card)
-        table.append(chosen_card)
-        print(f"{player} played: {chosen_card}")
-        return chosen_card
-
-
-
-
-
+# Function to start the game
 # Function to start the game
 def start_belote():
     print("Welcome to Belote!")
@@ -197,8 +203,6 @@ def start_belote():
         return
 
 
-
-
     if 2 <= num_players <= 4:
         players = get_player_names(num_players)
         print("Starting multiplayer game with players:", players)
@@ -209,7 +213,6 @@ def start_belote():
         print(f"The trump card is: {trump_card[0]} of {trump_card[1]}")
 
         # Loop to offer players the chance to "take" the trump card or pass
-        # Boucle pour offrir aux joueurs la possibilité de "prendre" l'atout ou de passer
         taker = None
         for i in range(len(players)):
             response = input(f"{players[i]}, do you want to take the trump card? (Y/N): ").upper()
@@ -219,69 +222,54 @@ def start_belote():
 
         if taker:
             print(f"{taker} took the trump card!")
-            # Players receive additional cards after the trump is taken
-            # Les joueurs reçoivent des cartes supplémentaires après la prise de l'atout
             additional_cards = remaining_cards[:5]
             remaining_cards = remaining_cards[5:]
 
-            # Distribute additional cards (2 to taker, 3 to others)
-            # Distribuer des cartes supplémentaires (2 au preneur, 3 aux autres)
             for i in range(num_players):
                 if players[i] == taker:
-                    dealt_initial_cards[i] += additional_cards[:2]
+                    dealt_initial_cards.append(additional_cards[:2])
                 else:
-                    dealt_initial_cards[i] += additional_cards[2:5]
+                    dealt_initial_cards.append(additional_cards[2:5])
 
         else:
             print("No one took the trump card. Redistributing cards...")
-
-            # Redistribute cards if no one takes the trump card
-            # Redistribuez les cartes si personne ne prend l'atout
             remaining_cards.extend([card for hand in dealt_initial_cards for card in hand])
             random.shuffle(remaining_cards)
 
-        # Start playing the game
         current_player_index = players.index(taker) if taker else 0
-        table = []  # Cards on the table
-        for _ in range(20):  # 20 turns in total
+        table = []
+        for _ in range(20):
             current_player = players[current_player_index]
             current_hand = dealt_initial_cards[current_player_index]
 
-            played_card = play_turn(current_player, current_hand, table, trump_card[1])
+            if current_player == "IA":
+                played_card = ai_play_turn(current_player, current_hand, table, trump_card[1])
+            else:
+                played_card = play_turn(current_player, current_hand, table, trump_card[1])
 
-            # Move to the next player
             current_player_index = (current_player_index + 1) % num_players
-
-
-
-
-
 
 
 
 
     elif num_players == 1:
-        if num_players == 1:
-            game_mode = "2"  # Set to play against AI automatically if only one player
-            players = get_player_names(1)  # Set 1 player for AI
-            print("Starting game against AI with player:", players[0])
+        game_mode = "2"
+        players = get_player_names(1)
+        print("Starting game against AI with player:", players[0])
 
-        # Implement AI game logic here
-        for _ in range(20):  # 20 turns in total
+        dealt_initial_cards, remaining_cards = distribute_initial_cards()
+        trump_card = select_trump_card(remaining_cards)
+        table = []
+        for _ in range(20):
             current_player = players[0]
             current_hand = dealt_initial_cards[0]
 
-            if current_player == taker:
-                # If AI is the taker, use the AI function to play
+            if current_player == "IA":
                 played_card = ai_play_turn(current_player, current_hand, table, trump_card[1])
             else:
-                # If AI is not the taker, use the existing play_turn function for user input
                 played_card = play_turn(current_player, current_hand, table, trump_card[1])
 
-            # Move to the next player
             current_player_index = (current_player_index + 1) % num_players
-
-
 
     else:
         print("Invalid choice. Exiting.")
