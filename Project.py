@@ -95,12 +95,40 @@ def get_card_value(card, trump_suit):
     else:
         return no_trump_values[card[0]]
 
+def determine_trick_winner(table, trump):
+    winning_card = None
+    winning_value = -1
+    color_on_table = table[0][1] if table else None  # Color on the table if any
+
+    for card in table:
+        card_value = get_card_value(card, trump)
+        if card_value > winning_value and (color_on_table is None or card[1] == color_on_table):
+            winning_value = card_value
+            winning_card = card
+
+    return winning_card
+
+def calculate_points(tricks):
+    team_points = [0, 0]  # Points for Team 1 and Team 2 respectively
+    for trick in tricks:
+        winner = determine_trick_winner(trick, trump_card[1])  # Assuming you have a function to determine the winner of a trick
+        winning_team = 0 if winner in trick[::2] else 1  # Assuming tricks are stored as [card1, card2, card3, card4] and alternate between teams
+
+        trick_points = sum(get_card_value(card, trump_card[1]) for card in trick)
+        team_points[winning_team] += trick_points
+
+    return team_points
+
+
+def display_hand(player, hand):
+    print(f"{player}'s hand: {hand}")
+
 def play_turn(player, hand, table, trump):
     print(f"{player}, it's your turn.")
     print(f"Table: {table}")
+    display_hand(player, hand)
 
-    # Display player's hand
-    print(f"Your hand: {hand}")
+
 
     color_on_table = table[0][1] if table else None  # Color on the table if any
 
@@ -121,6 +149,29 @@ def play_turn(player, hand, table, trump):
     print(f"{player} played: {chosen_card}")
     return chosen_card
 
+def ai_play_turn(player, hand, table, trump):
+    print(f"{player}, it's your turn.")
+    print(f"Table: {table}")
+    display_hand(player, hand)
+
+    color_on_table = table[0][1] if table else None
+
+    # AI logic for choosing a card
+    chosen_card = None
+    if has_color(hand, color_on_table):
+        for card in hand:
+            if card[1] == color_on_table:
+                chosen_card = card
+                break
+    else:
+        chosen_card = random.choice(hand)
+
+    hand.remove(chosen_card)
+    table.append(chosen_card)
+    print(f"{player} played: {chosen_card}")
+    return chosen_card
+
+
 # Modify this part in your code to compare card values and determine the winner of a trick
 # after each player has played their cards.
 # For instance:
@@ -138,13 +189,6 @@ def determine_trick_winner(table, trump):
 
     # The winning_card variable now holds the card that wins the trick.
     return winning_card
-
-
-
-# Function to play a turn
-def play_turn(player, hand, table, trump):
-    print(f"{player}, it's your turn.")
-    print(f"Table: {table}")
 
     # Display player's hand
     print(f"Your hand: {hand}")
@@ -178,7 +222,7 @@ def start_belote():
         num_players = int(input("Enter number of players (2-4): "))
         display_rules_en()
     elif lang_choice == "F":
-        num_players = int(input("Entrer un nombre de joueur compris (2-4): "))
+        num_players = int(input("Entrer un nombre de joueur compris (1-4): "))
         display_rules_fr()
     else:
         print("Invalid choice / Choix invalide")
@@ -188,6 +232,12 @@ def start_belote():
         players = get_player_names(num_players)
         print("Starting multiplayer game with players:", players)
         dealt_initial_cards, remaining_cards = distribute_initial_cards()
+
+        # Initialization for multiplayer mode
+        table = []
+        current_player_index = 0
+        rounds_played = 0
+        team_points = [0, 0]
 
         # Select and display the trump card
         trump_card = select_trump_card(remaining_cards)
@@ -222,24 +272,62 @@ def start_belote():
             random.shuffle(remaining_cards)
 
         # Start playing the game
-        current_player_index = players.index(taker) if taker else 0
-        table = []  # Cards on the table
-        for _ in range(20):  # 20 turns in total
+        for _ in range(20):
             current_player = players[current_player_index]
             current_hand = dealt_initial_cards[current_player_index]
 
-            played_card = play_turn(current_player, current_hand, table, trump_card[1])
+            if current_player == players[0]:  # Human player's turn
+                played_card = play_turn(current_player, current_hand, table, trump_card[1])
+            else:  # AI's turn
+                played_card = ai_play_turn(current_player, current_hand, table, trump_card[1])
 
-            # Move to the next player
             current_player_index = (current_player_index + 1) % num_players
+            rounds_played += 1
+            end_game, winner = check_end_game(team_points, rounds_played)
+            if end_game:
+                if winner:
+                    print(f"Team {winner} wins!")
+                else:
+                    print("The game ends in a draw!")
+                break  # End the loop as the game has ended
 
-    elif num_players == 1:
-        game_mode = "2"  # Set to play against AI automatically if only one player
-        players = get_player_names(1)  # Set 1 player for AI
+    if num_players == 1:
+        game_mode = "2"
+        players = get_player_names(2)  # Player and AI
         print("Starting game against AI with player:", players[0])
-        # Implement AI game logic here
-    else:
-        print("Invalid choice. Exiting.")
+
+        dealt_initial_cards, remaining_cards = distribute_initial_cards()
+        trump_card = select_trump_card(remaining_cards)
+        table = []
+        current_player_index = 0  # Initialize current_player_index here
+
+        for _ in range(20):  # Loop through the game rounds
+            current_player = players[current_player_index]
+            current_hand = dealt_initial_cards[current_player_index]
+
+            if current_player == players[0]:  # Human player's turn
+                played_card = play_turn(current_player, current_hand, table, trump_card[1])
+            else:  # AI's turn
+                played_card = ai_play_turn(current_player, current_hand, table, trump_card[1])
+
+            current_player_index = (current_player_index + 1) % len(players)  # Update index
+            end_game, winner = check_end_game(team_points, rounds_played)
+            if end_game:
+                if winner:
+                    print(f"Team {winner} wins!")
+                else:
+                    print("The game ends in a draw!")
+                break  # End the loop as the game has ended
+
+def check_end_game(team_points, rounds_played, max_rounds=20, target_score=1000):
+    if rounds_played >= max_rounds:
+        return True, None  # Game ends after a certain number of rounds
+
+    for idx, points in enumerate(team_points):
+        if points >= target_score:
+            return True, idx + 1  # Game ends when a team reaches the target score
+
+    return False, None  # Game continues
 
 # Start the game
 start_belote()
