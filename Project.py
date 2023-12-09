@@ -95,19 +95,6 @@ def get_card_value(card, trump_suit):
     else:
         return no_trump_values[card[0]]
 
-def determine_trick_winner(table, trump):
-    winning_card = None
-    winning_value = -1
-    color_on_table = table[0][1] if table else None  # Color on the table if any
-
-    for card in table:
-        card_value = get_card_value(card, trump)
-        if card_value > winning_value and (color_on_table is None or card[1] == color_on_table):
-            winning_value = card_value
-            winning_card = card
-
-    return winning_card
-
 def calculate_points(tricks):
     team_points = [0, 0]  # Points for Team 1 and Team 2 respectively
     for trick in tricks:
@@ -181,13 +168,14 @@ def ai_play_turn(player, hand, table, trump):
 def determine_trick_winner(table, trump):
     winning_card = None
     winning_value = -1
+    color_on_table = table[0][1] if table else None  # Color on the table if any
+
     for card in table:
         card_value = get_card_value(card, trump)
-        if card_value > winning_value:
+        if card_value > winning_value and (color_on_table is None or card[1] == color_on_table):
             winning_value = card_value
             winning_card = card
 
-    # The winning_card variable now holds the card that wins the trick.
     return winning_card
 
     # Display player's hand
