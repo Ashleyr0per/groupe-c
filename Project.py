@@ -1,321 +1,395 @@
 import random
 
-# Function to display rules in English
-def display_rules_en():
-    rules_en = """
-    Belote Rules:
-    - The game is played with 32 cards.
-    - Players form two teams.
-    - The goal is to win tricks containing valuable cards.
-    - ... (add more rules)
-    """
-    print(rules_en)
+# Fonction pour afficher les regles en anglais
+def affichage_regle_en():
+    regle_en = print(''' The goal of belote game :
 
-# Function to display rules in French
-def display_rules_fr():
-    rules_fr = """
-    Règles de la Belote :
-    - Le jeu se joue avec 32 cartes.
-    - Les joueurs forment deux équipes.
-    - Le but est de remporter des plis contenant des cartes de valeur.
-    - ... (ajoutez plus de règles)
-    """
-    print(rules_fr)
+        Belote is a game of contract. The team that "takes" the contract must reach 82 points minimum to win. If this total is reached,
+        each team scores the points it has made. If the team fails to reach the 82 points, it does not score a point, the 162 points will
+        be awarded to the opponents. The total number of possible points (cards and ten der) in the folds is 162 points. The game ends
+        when one of the team reaches a minimum of 501 points. If both teams exceed 501 points, the team with the highest score wins the match.
 
-# Function to get player names and shuffle order
-def get_player_names(num_players):
-    players = []
-    for i in range(num_players):
-        name = input(f"Enter player {i+1} name: ")
-        players.append(name)
+        Value and order of Belote cards :
+        Trump	No Trump
+        Jack : 20 points  	Ace : 11 points
+        9 : 14 points	    10 : 10 points
+        Ace : 11 points	    King : 4 points
+        10 : 10 points	    Queen : 3 points
+        King : 4 points	    Jack : 2 points
+        Queen : 3 points	9 : 0 point
+        8 : 0 point	        8 : 0 point
+        7 : 0 point	        7 : 0 point
 
-    random.shuffle(players)
-    return players
+        The distribution of cards :
+        The cards are distributed in two phases. In the first phase, each joueur receives 5 cards. A carte in the middle of
+        the table is then placed face up in the middle of the table. The carte is considered the color of the atout.
+        The first joueur located after the dealer choose to "take" or not take the atout carte. If the joueur does not take,
+        it is up to the next joueur to take the carte or not. If, in the first round, one of the joueurs decides to take the atout, the game begins.
+        If none of the joueurs want to take on, then the first joueur may choose to announce another color, different from the carte on the field.
+        If he does not say anything, the next joueur can choose his asset color. If one joueur chooses the color, the game can begin.
 
-# Function to initialize and distribute initial cards (5 cards per player) and a trump card
-def distribute_initial_cards():
+        If no joueur takes the first and second turns, the cards are redistributed.
+
+        When a joueur decides to take, he receives 2 additional cards and the other joueurs receive 3 additional cards. All joueurs should have 8 cards each.
+
+        How to play the game:
+        The joueur to the dealer s left begins the turn with a carte of his choice. Each joueur must play the carte with the requested color.
+        If a joueur can not provide a carte of that color, he must necessarily play a carte in the atout color. If he does not have an asset, he can play another carte in another color.
+
+        In some cases, it is possible not to play the atout. If a joueur s partner carte is the strongest on the table and the joueur does not have the color to follow.
+        The joueur who wins the turn plays the first carte of the next turn. The strengths are always stronger than the others.
+
+        When two joueurs cut, the second joueur must necessarily overtake, that is, provide a stronger atout than the one already on the table.
+        If he does not have a stronger asset, he must still provide an asset if he has one.
+
+        How to count the points at the Belote ?
+        The team that took the contract must collect more points than the other team and must have at least 82 points. The last fold is worth 10 extra points ("the 10 of der").
+        For the 32 cards, we have 152 points. And add the "10 of der or 162 points in total.
+        If the attacking team reaches a minimum of 82 points, each team scores the points it has obtained.
+        ''')
+    print(regle_en)
+
+# Fonction pour afficher les regle en français
+def affichage_regle_fr():
+    regle_fr = '''
+    Le but du jeu de belote :
+
+    La Belote est un jeu de contrat. L'équipe qui "prend" le contrat doit atteindre un minimum de 82 points pour gagner. Si ce total est atteint,
+    chaque équipe marque les points qu'elle a obtenus. Si l'équipe ne parvient pas à atteindre les 82 points, elle ne marque pas de point, les 162 points
+    seront attribués aux adversaires. Le nombre total de points possibles (cartes et dix de der) dans les plis est de 162 points. Le jeu se termine
+    lorsqu'une des équipes atteint un minimum de 501 points. Si les deux équipes dépassent 501 points, l'équipe ayant le score le plus élevé remporte la partie.
+
+    Valeur et ordre des cartes de Belote :
+    Atout	 Sans Atout
+    Valet : 20 points	    As : 11 points
+    9 : 14 points	        10 : 10 points
+    As : 11 points	        Roi : 4 points
+    10 : 10 points	        Dame : 3 points
+    Roi : 4 points	        Valet : 2 points
+    Dame : 3 points	        9 : 0 point
+    8 : 0 point	            8 : 0 point
+    7 : 0 point	            7 : 0 point
+
+    La distribution des cartes :
+    Les cartes sont distribuées en deux phases. Dans la première phase, chaque joueur reçoit 5 cartes. Une carte est ensuite placée face visible au milieu de
+    la table. La carte est considérée comme la couleur de l'atout. Le premier joueur situé après le donneur choisit de "prendre" ou de ne pas prendre la carte d'atout.
+    Si le joueur ne prend pas, c'est au joueur suivant de prendre la carte ou non. Si, lors du premier tour, l'un des joueurs décide de prendre l'atout, le jeu commence.
+    Si aucun des joueurs ne souhaite prendre, alors le premier joueur peut choisir d'annoncer une autre couleur, différente de la carte sur le terrain.
+    S'il ne dit rien, le joueur suivant peut choisir sa couleur d'atout. Si un joueur choisit la couleur, le jeu peut commencer.
+
+    Si aucun joueur ne prend aux premier et second tours, les cartes sont redistribuées.
+
+    Lorsqu'un joueur décide de prendre, il reçoit 2 cartes supplémentaires et les autres joueurs reçoivent 3 cartes supplémentaires. Tous les joueurs doivent avoir 8 cartes chacun.
+
+    Comment jouer au jeu :
+    Le joueur à gauche du donneur commence le tour avec une carte de son choix. Chaque joueur doit jouer la carte de la couleur demandée.
+    Si un joueur ne peut pas fournir une carte de cette couleur, il doit nécessairement jouer une carte dans la couleur de l'atout. S'il n'a pas d'atout,
+    il peut jouer une autre carte dans une autre couleur.
+
+    Dans certains cas, il est possible de ne pas jouer l'atout. Si la carte partenaire d'un joueur est la plus forte sur la table et que le joueur n'a pas la couleur pour suivre.
+    Le joueur qui remporte le pli joue la première carte du tour suivant. Les atouts sont toujours plus forts que les autres.
+
+    Lorsque deux joueurs coupent, le deuxième joueur doit nécessairement surcouper, c'est-à-dire fournir un atout plus fort que celui déjà sur la table.
+    S'il n'a pas d'atout plus fort, il doit quand même fournir un atout s'il en a un.
+
+    Comment compter les points à la Belote ?
+    L'équipe qui a pris le contrat doit récolter plus de points que l'autre équipe et doit avoir au moins 82 points. Le dernier pli vaut 10 points supplémentaires (le "10 de der").
+    Pour les 32 cartes, nous avons 152 points. Et ajoutez le "10 de der" ou 162 points au total.
+    Si l'équipe attaquante atteint un minimum de 82 points, chaque équipe marque les points qu'elle a obtenus.
+    '''
+    print(regle_fr)
+
+# Fonction pour avoir le nom des joueurs et les mélanger
+def avoir_nom_joueurs(num_joueurs):
+    joueurs = []
+    for i in range(num_joueurs):
+        nom = input(f"Entrer votre {i+1} nom: ")
+        joueurs.append(nom)
+
+    random.shuffle(joueurs)
+    return joueurs
+
+# FOnction pour initialiser et distribuer les cartes et l'atout
+def distribution_initial_cartes():
     valeurs = ["7", "8", "9", "10", "Valet", "Dame", "Roi", "As"]
     couleurs = ["coeur", "trefle", "carreau", "pique"]
     cartes = [(v, c) for v in valeurs for c in couleurs]
 
     random.shuffle(cartes)
 
-    players_cards = [[] for _ in range(4)]
-    cards_dealt = 0
+    cartes_joueurs = [[] for _ in range(4)]
+    cartes_donner = 0
 
-    while cards_dealt < 20:  # 5 cards per player
+    while cartes_donner < 20:  # 5 cartes par joueurs
         for i in range(4):
-            if cards_dealt >= 20 or len(players_cards[i]) >= 5:
+            if cartes_donner >= 20 or len(cartes_joueurs[i]) >= 5:
                 break
-            players_cards[i].append(cartes[cards_dealt])
-            cards_dealt += 1
+            cartes_joueurs[i].append(cartes[cartes_donner])
+            cartes_donner += 1
 
-    return players_cards, cartes[cards_dealt:]  # Return dealt cards and remaining cards
+    return cartes_joueurs, cartes[cartes_donner:]  # Return les cartes_donner et les cartes restantes
 
-# Function to select a trump card
-def select_trump_card(remaining_cards):
-    random.shuffle(remaining_cards)
-    return remaining_cards[0]
+# Fonction pour prendre l'atout
+def select_atout(cartes_restantes):
+    random.shuffle(cartes_restantes)
+    return cartes_restantes[0]
 
-# Function to check if a player has a card of the requested color
-def has_color(cards, color):
-    for card in cards:
-        if card[1] == color:
+# Fonction pour verifier si le joueur a une cartes correspondant a la couleur
+def joueur_a_couleur(cartes, couleur):
+    for carte in cartes:
+        if carte[1] == couleur:
             return True
     return False
 
-# Define point values for Trump and No Trump
-trump_values = {
-    "Jack": 20,
+#  atout and Non atout
+valeur_atout = {
+    "Valet": 20,
     "9": 14,
-    "Ace": 11,
+    "As": 11,
     "10": 10,
-    "King": 4,
-    "Queen": 3,
+    "Roi": 4,
+    "Dame": 3,
     "8": 0,
     "7": 0
 }
 
-no_trump_values = {
-    "Ace": 11,
+valeur_non_atout = {
+    "As": 11,
     "10": 10,
-    "King": 4,
-    "Queen": 3,
-    "Jack": 2,
+    "Roi": 4,
+    "Dame": 3,
+    "Valet": 2,
     "9": 0,
     "8": 0,
     "7": 0
 }
 #comparing cards during gameplay
-def get_card_value(card, trump_suit):
-    if card[0] == "Jack" and card[1] == trump_suit:
-        return trump_values["Jack"]
-    elif card[0] in trump_values:
-        return trump_values[card[0]]
+def get_valeur_carte(carte, atout):
+    if carte[0] == "Valet" and carte[1] == atout:
+        return valeur_atout["Valet"]
+    elif carte[0] in valeur_atout:
+        return valeur_atout[carte[0]]
     else:
-        return no_trump_values[card[0]]
+        return valeur_non_atout[carte[0]]
 
-def calculate_points(tricks):
-    team_points = [0, 0]  # Points for Team 1 and Team 2 respectively
-    for trick in tricks:
-        winner = determine_trick_winner(trick, trump_card[1])  # Assuming you have a function to determine the winner of a trick
-        winning_team = 0 if winner in trick[::2] else 1  # Assuming tricks are stored as [card1, card2, card3, card4] and alternate between teams
+def calculate_points(tours):
+    points_equipe = [0, 0]  # Points pour equipe 1 et 2
+    for tour in tours:
+        gagnant = determine_trick_gagnant(tour, atout[1])
+        equipe_gagnante = 0 if gagnant in tour[::2] else 1
 
-        trick_points = sum(get_card_value(card, trump_card[1]) for card in trick)
-        team_points[winning_team] += trick_points
+        points_tour = sum(get_valeur_carte(carte, atout[1]) for carte in tour)
+        points_equipe[equipe_gagnante] += points_tour
 
-    return team_points
+    return points_equipe
 
 
-def display_hand(player, hand):
-    print(f"{player}'s hand: {hand}")
+def display_hand(joueur, main):
+    print(f"main du {joueur}'s : {main}")
 
-def play_turn(player, hand, table, trump):
-    print(f"{player}, it's your turn.")
+def tour_jeu(joueur, main, table, atout):
+    print(f"{joueur}, c'est ton tour.")
     print(f"Table: {table}")
-    display_hand(player, hand)
+    display_hand(joueur, main)
 
 
 
-    color_on_table = table[0][1] if table else None  # Color on the table if any
+    couleur_de_table = table[0][1] if table else None
 
-    if has_color(hand, color_on_table):  # Check if player has requested color
-        print(f"Play a card with color {color_on_table}.")
-    else:  # Player plays a trump or any card if unable to follow the color
-        print("You don't have the requested color. Play a trump card or any card.")
+    if joueur_a_couleur(main, couleur_de_table):  # Verifier si le joueur a choisi un atout
+        print(f"Jouez une carte avec la meme couleur {couleur_de_table}.")
+    else:  # Le joueur joue un atout ou n'importe quelle carte s'il est incapable de suivre la couleur
+        print("Si vous n'avez pas la même couleur choisi jouez un atout ou une autre carte ")
 
-    chosen_card = None
-    while chosen_card not in hand:
-        chosen_card_input = input("Enter the card you want to play (valeur de la couleur): ")
-        chosen_card = tuple(chosen_card_input.split(' de '))
-        if chosen_card not in hand:
-            print("Invalid card! Try again.")
+    carte_choisi = None
+    while carte_choisi not in main:
+        input_carte_choisi = input("Entrez la carte que vous souhaitez jouer (valeur de la couleur): ")
+        carte_choisi = tuple(input_carte_choisi.split(' de '))
+        if carte_choisi not in main:
+            print("Carte invalide! Essayez à nouveau")
 
-    hand.remove(chosen_card)
-    table.append(chosen_card)
-    print(f"{player} played: {chosen_card}")
-    return chosen_card
+    main.remove(carte_choisi)
+    table.append(carte_choisi)
+    print(f"{joueur} played: {carte_choisi}")
+    return carte_choisi
 
-def ai_play_turn(player, hand, table, trump):
-    print(f"{player}, it's your turn.")
+def tour_jeu_ia(joueur, main, table, atout):
+    print(f"{joueur}, c'est votre tour.")
     print(f"Table: {table}")
-    display_hand(player, hand)
+    display_hand(joueur, main)
 
-    color_on_table = table[0][1] if table else None
+    couleur_de_table = table[0][1] if table else None
 
-    # AI logic for choosing a card
-    chosen_card = None
-    if has_color(hand, color_on_table):
-        for card in hand:
-            if card[1] == color_on_table:
-                chosen_card = card
+    # Logique de l'IA pour choisir une carte
+    carte_choisi = None
+    if joueur_a_couleur(main, couleur_de_table):
+        for carte in main:
+            if carte[1] == couleur_de_table:
+                carte_choisi = carte
                 break
     else:
-        chosen_card = random.choice(hand)
+        carte_choisi = random.choice(main)
 
-    hand.remove(chosen_card)
-    table.append(chosen_card)
-    print(f"{player} played: {chosen_card}")
-    return chosen_card
-
-
-# Modify this part in your code to compare card values and determine the winner of a trick
-# after each player has played their cards.
-# For instance:
-# After 4 cards are played (one from each player), compare their values and determine the winner.
-
-# Assuming 'table' contains the cards played by each player in a trick.
-def determine_trick_winner(table, trump):
-    winning_card = None
-    winning_value = -1
-    color_on_table = table[0][1] if table else None  # Color on the table if any
-
-    for card in table:
-        card_value = get_card_value(card, trump)
-        if card_value > winning_value and (color_on_table is None or card[1] == color_on_table):
-            winning_value = card_value
-            winning_card = card
-
-    return winning_card
-
-    # Display player's hand
-    print(f"Your hand: {hand}")
-
-    color_on_table = table[0][1] if table else None  # Color on the table if any
-
-    if has_color(hand, color_on_table):  # Check if player has requested color
-        print(f"Play a card with color {color_on_table}.")
-    else:  # Player plays a trump or any card if unable to follow the color
-        print("You don't have the requested color. Play a trump card or any card.")
-
-    chosen_card = None
-    while chosen_card not in hand:
-        chosen_card_input = input("Enter the card you want to play (valeur de la couleur): ")
-        chosen_card = tuple(chosen_card_input.split(' de '))
-        if chosen_card not in hand:
-            print("Invalid card! Try again.")
-
-    hand.remove(chosen_card)
-    table.append(chosen_card)
-    print(f"{player} played: {chosen_card}")
-    return chosen_card
+    main.remove(carte_choisi)
+    table.append(carte_choisi)
+    print(f"{joueur} played: {carte_choisi}")
+    return carte_choisi
 
 
-# Function to start the game
-def start_belote():
-    print("Welcome to Belote!")
+#En supposant que 'table' contient les cartes jouées par chaque joueur dans un tour
+def determine_trick_gagnant(table, atout):
+    carte_gagnante = None
+    valeur_gagnante = -1
+    couleur_de_table = table[0][1] if table else None
+
+    for carte in table:
+        card_value = get_valeur_carte(carte, atout)
+        if card_value > valeur_gagnante and (couleur_de_table is None or carte[1] == couleur_de_table):
+            valeur_gagnante = card_value
+            carte_gagnante = carte
+
+    return carte_gagnante
+
+    # Montrer le main du joueur
+    print(f"Votre main: {main}")
+
+    couleur_de_table = table[0][1] if table else None
+
+    if joueur_a_couleur(main, couleur_de_table):
+        print(f"Play a carte with color {couleur_de_table}.")
+    else:
+        print("Si vous n'avez pas la même couleur choisi jouez un atout ou une autre carte.")
+
+    carte_choisi = None
+    while carte_choisi not in main:
+        input_carte_choisi = input("Entrez la carte que vous souhaitez jouer (valeur de la couleur): ")
+        carte_choisi = tuple(input_carte_choisi.split(' de '))
+        if carte_choisi not in main:
+            print("Carte invalide! Essayez à nouveau.")
+
+    main.remove(carte_choisi)
+    table.append(carte_choisi)
+    print(f"{joueur} played: {carte_choisi}")
+    return carte_choisi
+
+
+# Fonction du jeu
+def start_jeu():
+    print("Bienvenue!")
     lang_choice = input("Choose 'F' for français or 'E' for english ").upper()
 
     if lang_choice == "E":
-        num_players = int(input("Enter number of players (2-4): "))
-        display_rules_en()
+        nb_joueur = int(input("Enter number of joueurs (1-4): "))
+        affichage_regle_en()
     elif lang_choice == "F":
-        num_players = int(input("Entrer un nombre de joueur compris (1-4): "))
-        display_rules_fr()
+        nb_joueur = int(input("Entrer un nombre de joueur compris (1-4): "))
+        affichage_regle_fr()
     else:
         print("Invalid choice / Choix invalide")
         return
 
-    if 2 <= num_players <= 4:
-        players = get_player_names(num_players)
-        print("Starting multiplayer game with players:", players)
-        dealt_initial_cards, remaining_cards = distribute_initial_cards()
+    if 2 <= nb_joueur <= 4:
+        joueurs = avoir_nom_joueurs(nb_joueur)
+        print("Commencer une partie multijoueur avec les joueurs :", joueurs)
+        carte_donner, carte_restantes = distribution_initial_cartes()
 
-        # Initialization for multiplayer mode
+        # Initialization mode multijoueurs
         table = []
-        current_player_index = 0
-        rounds_played = 0
-        team_points = [0, 0]
+        index_joueur_actuelle = 0
+        tour_jouer = 0
+        points_equipe = [0, 0]
 
-        # Select and display the trump card
-        trump_card = select_trump_card(remaining_cards)
-        print(f"The trump card is: {trump_card[0]} of {trump_card[1]}")
 
-        # Loop to offer players the chance to "take" the trump card or pass
-        taker = None
-        for i in range(len(players)):
-            response = input(f"{players[i]}, do you want to take the trump card? (Y/N): ").upper()
-            if response == "Y":
-                taker = players[i]
+        atout = select_atout(carte_restantes)
+        print(f"Votre atout est {atout[0]} de {atout[1]}")
+
+        # Loop pour offrir aux joueurs la possibilité de "prendre" la carte d'atout ou de passer"
+        preneur = None
+        for i in range(len(joueurs)):
+            reponse = input(f"{joueurs[i]}, Voulez_vous prendre la carte ? (Y/N): ").upper()
+            if reponse == "Y":
+                preneur = joueurs[i]
                 break
 
-        if taker:
-            print(f"{taker} took the trump card!")
-            # Players receive additional cards after the trump is taken
-            additional_cards = remaining_cards[:5]
-            remaining_cards = remaining_cards[5:]
+        if preneur:
+            print(f"{preneur} a pris la carte!")
 
-            # Distribute additional cards (2 to taker, 3 to others)
-            for i in range(num_players):
-                if players[i] == taker:
-                    dealt_initial_cards[i] += additional_cards[:2]
+            cartes_aditonnel = carte_restantes[:5]
+            carte_restantes = carte_restantes[5:]
+
+
+            for i in range(nb_joueur):
+                if joueurs[i] == preneur:
+                    carte_donner[i] += cartes_aditonnel[:2]
                 else:
-                    dealt_initial_cards[i] += additional_cards[2:5]
+                    carte_donner[i] += cartes_aditonnel[2:5]
 
         else:
-            print("No one took the trump card. Redistributing cards...")
+            print("Persone n'a pris une carte. Redistribution des cartes.")
 
-            # Redistribute cards if no one takes the trump card
-            remaining_cards.extend([card for hand in dealt_initial_cards for card in hand])
-            random.shuffle(remaining_cards)
 
-        # Start playing the game
+            carte_restantes.extend([carte for main in carte_donner for carte in main])
+            random.shuffle(carte_restantes)
+
         for _ in range(20):
-            current_player = players[current_player_index]
-            current_hand = dealt_initial_cards[current_player_index]
+            joueur_actu = joueurs[index_joueur_actuelle]
+            main_actu = carte_donner[index_joueur_actuelle]
 
-            if current_player == players[0]:  # Human player's turn
-                played_card = play_turn(current_player, current_hand, table, trump_card[1])
-            else:  # AI's turn
-                played_card = ai_play_turn(current_player, current_hand, table, trump_card[1])
+            if joueur_actu == joueurs[0]:  #tour joueur
+                carte_jouer = tour_jeu(joueur_actu, main_actu, table, atout[1])
+            else:  # tour IA
+                carte_jouer = tour_jeu_ia (joueur_actu, main_actu, table, atout[1])
 
-            current_player_index = (current_player_index + 1) % num_players
-            rounds_played += 1
-            end_game, winner = check_end_game(team_points, rounds_played)
-            if end_game:
-                if winner:
-                    print(f"Team {winner} wins!")
+            index_joueur_actuelle = (index_joueur_actuelle + 1) % nb_joueur
+            tour_jouer += 1
+            end_jeu, gagnant = verifier_end_jeu(points_equipe, tour_jouer)
+            if end_jeu:
+                if gagnant:
+                    print(f"Equipe {gagnant} gagne!")
                 else:
-                    print("The game ends in a draw!")
-                break  # End the loop as the game has ended
+                    print("La partie se termine sur un match nul!")
+                break
 
-    if num_players == 1:
-        game_mode = "2"
-        players = get_player_names(2)  # Player and AI
-        print("Starting game against AI with player:", players[0])
+    if nb_joueur == 1:
+        jeu_mode = "2"
+        joueurs = avoir_nom_joueurs(2)  # Joueur et IA
+        print("Commencer la partie contre l'IA avec le joueur :", joueurs[0])
 
-        dealt_initial_cards, remaining_cards = distribute_initial_cards()
-        trump_card = select_trump_card(remaining_cards)
+        carte_donner, carte_restantes = distribution_initial_cartes()
+        atout = select_atout(carte_restantes)
         table = []
-        current_player_index = 0  # Initialize current_player_index here
+        index_joueur_actuelle = 0
 
-        for _ in range(20):  # Loop through the game rounds
-            current_player = players[current_player_index]
-            current_hand = dealt_initial_cards[current_player_index]
+        for _ in range(20):
+            joueur_actu = joueurs[index_joueur_actuelle]
+            main_actu = carte_donner[index_joueur_actuelle]
+            points_equipe = [0, 0]
+            tour_jouer = 0
 
-            if current_player == players[0]:  # Human player's turn
-                played_card = play_turn(current_player, current_hand, table, trump_card[1])
-            else:  # AI's turn
-                played_card = ai_play_turn(current_player, current_hand, table, trump_card[1])
+            if joueur_actu == joueurs[0]:
+                carte_jouer = tour_jeu(joueur_actu, main_actu, table, atout[1])
+            else:
+                carte_jouer = tour_jeu_ia (joueur_actu, main_actu, table, atout[1])
 
-            current_player_index = (current_player_index + 1) % len(players)  # Update index
-            end_game, winner = check_end_game(team_points, rounds_played)
-            if end_game:
-                if winner:
-                    print(f"Team {winner} wins!")
+            index_joueur_actuelle = (index_joueur_actuelle + 1) % len(joueurs)
+            end_jeu, gagnant = verifier_end_jeu(points_equipe, tour_jouer)
+            if end_jeu:
+                if gagnant:
+                    print(f"Team {gagnant} wins!")
                 else:
                     print("The game ends in a draw!")
-                break  # End the loop as the game has ended
+                break
 
-def check_end_game(team_points, rounds_played, max_rounds=20, target_score=1000):
-    if rounds_played >= max_rounds:
-        return True, None  # Game ends after a certain number of rounds
+def verifier_end_jeu(points_equipe, tour_jouer, tour_max=20, score_cible=1000):
+    if tour_jouer >= tour_max:
+        return True, None
 
-    for idx, points in enumerate(team_points):
-        if points >= target_score:
-            return True, idx + 1  # Game ends when a team reaches the target score
+    for idx, points in enumerate(points_equipe):
+        if points >= score_cible:
+            return True, idx + 1
 
-    return False, None  # Game continues
+    return False, None
+
 
 # Start the game
-start_belote()
+start_jeu()
